@@ -7,3 +7,6 @@ fastapi = "^0.115.12"
 uvicorn = {extras = ["standart"], version = "^0.34.3"}
 pytelegrambotapi = "^4.27.0"
 pydantic-settings = "^2.9.1"
+asyncio = "^3.4.3"
+aiohttp = "^3.12.13"
+python-dotenv = "^1.1.0"
