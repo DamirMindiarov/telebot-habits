@@ -1,0 +1,9 @@
+[tool.poetry]
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.115.12"
+uvicorn = {extras = ["standart"], version = "^0.34.3"}
+pytelegrambotapi = "^4.27.0"
+pydantic-settings = "^2.9.1"
