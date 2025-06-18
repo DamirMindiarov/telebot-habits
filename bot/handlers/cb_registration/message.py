@@ -1,0 +1,44 @@
+from loader import bot
+from telebot.types import CallbackQuery, Message
+from states import PasswordStates
+from bot.handlers.cb_registration.keyboard import keyboard
+
+
+@bot.callback_query_handler(func=lambda callback: callback.data == "cb_registration")
+async def create_password(callback: CallbackQuery):
+    await bot.set_state(
+        user_id=callback.from_user.id,
+        state=PasswordStates.for_registration,
+    )
+
+    await bot.send_message(
+        chat_id=callback.from_user.id,
+        text=f"now_state {await bot.get_state(user_id=callback.from_user.id)}"
+    )
+
+    await bot.send_message(
+        chat_id=callback.from_user.id,
+        text=f"Придумайте пароль(4 символа)"
+    )
+
+
+@bot.message_handler(state=PasswordStates.for_registration)
+async def create_password_1(password: Message):
+
+    if len(password.text) >= 4:
+        await bot.send_message(
+            chat_id=password.chat.id,
+            text=f"your pass = {password.text}",
+            reply_markup=keyboard
+        )
+        await bot.delete_state(user_id=password.from_user.id)
+
+        await bot.send_message(
+            chat_id=password.from_user.id,
+            text=f"now_state {await bot.get_state(user_id=password.from_user.id)}"
+        )
+    else:
+        await bot.send_message(
+            chat_id=password.chat.id,
+            text="Слишком короткий, надо 4 или более символа"
+        )
