@@ -21,14 +21,14 @@ async def show_habits(callback: CallbackQuery):
     response = requests.get(url="http://localhost:8000/habits", headers=headers)
     # habits = """Список привычек на сегодня:
     # Привычка_1
-    # Выполнена: /done_1
-    # Не выполнена: /fail_1
+    # Выполнена: 0 из 21
+    # Не выполнена: 0 из 21
     # Изменить: /update_1
     # Удалить: /delete_1
     #
     # Привычка_2
-    # Выполнена: /done_2
-    # Не выполнена: /fail_2
+    # Выполнена: 0 из 21
+    # Не выполнена: 0 из 21
     # Изменить: /update_2
     # Удалить: /delete_2
     # """
