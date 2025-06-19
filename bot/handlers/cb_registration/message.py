@@ -1,3 +1,5 @@
+import requests
+
 from loader import bot
 from telebot.types import CallbackQuery, Message
 from states import PasswordStates
@@ -26,17 +28,19 @@ async def create_password(callback: CallbackQuery):
 async def create_password_1(password: Message):
 
     if len(password.text) >= 4:
-        await bot.send_message(
-            chat_id=password.chat.id,
-            text=f"your pass = {password.text}",
-            reply_markup=keyboard
-        )
-        await bot.delete_state(user_id=password.from_user.id)
+        data = {"username": password.from_user.id, "password": password.text}
+        response = requests.post("http://localhost:8000/registration",
+                                 data=data)
 
-        await bot.send_message(
-            chat_id=password.from_user.id,
-            text=f"now_state {await bot.get_state(user_id=password.from_user.id)}"
-        )
+        if response.status_code != 201:
+            await bot.send_message(password.from_user.id,
+                                   text=f"Вы уже зарегистрированы",
+                                   reply_markup=keyboard)
+            return
+        await bot.send_message(password.from_user.id,
+                               text=f"Вы зарегистрированы",
+                               reply_markup=keyboard)
+
     else:
         await bot.send_message(
             chat_id=password.chat.id,

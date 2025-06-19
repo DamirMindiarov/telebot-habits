@@ -1,0 +1,11 @@
+from sqlalchemy import select
+
+from database import session_async, UsersDB, HabitsDB
+
+
+async def get_habits_by_user_id(user_id: str) -> str:
+
+    async with session_async() as session:
+        habits = await session.execute(select(HabitsDB).where(UsersDB.user_id == user_id))
+
+    return habits.fetchall()

@@ -1,3 +1,4 @@
+import requests
 from telebot.types import CallbackQuery, Message
 
 from loader import bot
@@ -21,8 +22,12 @@ async def login(callback: CallbackQuery):
 
 @bot.message_handler(state=PasswordStates.for_login)
 async def login_1(password: Message):
+    data = {"username": password.from_user.id,
+            "password": password.text}
+    response = requests.post("http://localhost:8000/token", data=data)
+
     # если пароль тру
-    if password:
+    if response.status_code == 200:
         await bot.send_message(
             chat_id=password.chat.id,
             text="Добро пожаловать!",
