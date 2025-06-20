@@ -1,8 +1,11 @@
 import requests
 from telebot.types import CallbackQuery, Message
 
+from bot.functions import get_token_by_user_id
 from loader import bot
 from bot.states import for_add_habit
+from bot.handlers.cb_show_habits.keyboard import keyboard
+from app.pydentic_models import Habit
 
 
 @bot.callback_query_handler(
@@ -25,12 +28,18 @@ async def add_habit(callback: CallbackQuery):
     # """
     await bot.send_message(
         chat_id=callback.from_user.id,
-        text="Введите текст привычки"
+        text="Введите название новой привычки"
     )
 
 
-@bot.send_message(state=for_add_habit)
+@bot.message_handler(state=for_add_habit)
 async def add_habit_1(message: Message):
     # запрос на добавление привычки
-    response = requests.post("http://localhost:8000/habits")
-    await bot.send_message(chat_id=message.chat.id, text=response.text)
+    token = await get_token_by_user_id(user_id=str(message.from_user.id))
+
+    habit = {"name": message.text, "user_id": str(message.from_user.id)}
+    headers = {"Authorization": f"Bearer {token}"}
+
+    response = requests.post("http://localhost:8000/habits", json=habit, headers=headers)
+    # print(response)
+    await bot.send_message(chat_id=message.chat.id, text="await", reply_markup=keyboard)

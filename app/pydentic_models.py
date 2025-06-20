@@ -1,0 +1,8 @@
+from pydantic import BaseModel
+
+
+class Habit(BaseModel):
+    name: str
+    count_done: int = 0
+    user_id: str
+
