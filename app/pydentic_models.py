@@ -9,3 +9,7 @@ class Habit(BaseModel):
 
 class HabitResponse(BaseModel):
     name: str
+
+
+class HabitId(BaseModel):
+    habit_id: str

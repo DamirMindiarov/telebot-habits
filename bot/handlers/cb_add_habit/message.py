@@ -4,7 +4,7 @@ from telebot.types import CallbackQuery, Message
 
 from bot.functions import get_token_by_user_id
 from loader import bot
-from bot.states import for_add_habit
+from bot.states import HabitState
 from bot.handlers.cb_show_habits.keyboard import keyboard
 from app.pydentic_models import Habit
 
@@ -13,14 +13,14 @@ from app.pydentic_models import Habit
     func=lambda callback: callback.data == "cb_add_habit"
 )
 async def add_habit(callback: CallbackQuery):
-    await bot.set_state(user_id=callback.from_user.id, state=for_add_habit)
+    await bot.set_state(user_id=callback.from_user.id, state=HabitState.for_add_habit)
     await bot.send_message(
         chat_id=callback.from_user.id,
         text="Введите название новой привычки"
     )
 
 
-@bot.message_handler(state=for_add_habit)
+@bot.message_handler(state=HabitState.for_add_habit)
 async def add_habit_1(message: Message):
     # запрос на добавление привычки
     token = await get_token_by_user_id(user_id=str(message.from_user.id))
@@ -30,4 +30,6 @@ async def add_habit_1(message: Message):
 
     response = requests.post("http://localhost:8000/habits", json=habit, headers=headers)
     habit_name = json.loads(response.text)["name"]
+
     await bot.send_message(chat_id=message.chat.id, text=f"Добавлена привычка {habit_name}", reply_markup=keyboard)
+    await bot.delete_state(user_id=message.from_user.id, chat_id=message.chat.id)

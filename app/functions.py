@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, delete
 
 from database import session_async, UsersDB, HabitsDB
 
@@ -19,3 +19,9 @@ async def add_habit(name: str, count_done:int, user_id: str) -> HabitsDB:
         await session.commit()
 
     return habit
+
+
+async def del_habit(habit_id: int):
+    async with session_async() as  session:
+        await session.execute(delete(HabitsDB).where(HabitsDB.id == habit_id))
+        await session.commit()

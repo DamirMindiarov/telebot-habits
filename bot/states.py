@@ -7,4 +7,5 @@ class PasswordStates(StatesGroup):
     for_forgot = State()
 
 
-for_add_habit = State()
+class HabitState(StatesGroup):
+    for_add_habit = State()
