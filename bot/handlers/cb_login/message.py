@@ -6,6 +6,7 @@ from states import PasswordStates
 from bot.handlers.cb_login.keyboard import keyboard_forgot_pass, keyboard_show_habits
 
 
+@bot.message_handler(func=lambda callback: callback.text == "Логин")
 @bot.callback_query_handler(func=lambda callback: callback.data == "cb_login")
 async def login(callback: CallbackQuery):
     await bot.set_state(

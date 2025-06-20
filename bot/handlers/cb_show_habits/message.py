@@ -1,13 +1,14 @@
 import ast
 
 import requests
-from telebot.types import CallbackQuery
+from telebot.types import CallbackQuery, Message
 
 from bot.functions import get_token_by_user_id
 from bot.handlers.cb_show_habits.keyboard import keyboard
 from loader import bot
 
 
+@bot.message_handler(func=lambda callback: callback.text == "Мои привычки")
 @bot.callback_query_handler(
     func=lambda callback: callback.data == "cb_show_habits"
 )
