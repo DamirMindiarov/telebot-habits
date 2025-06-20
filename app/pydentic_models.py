@@ -6,3 +6,6 @@ class Habit(BaseModel):
     count_done: int = 0
     user_id: str
 
+
+class HabitResponse(BaseModel):
+    name: str

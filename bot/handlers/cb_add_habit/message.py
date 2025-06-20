@@ -1,4 +1,5 @@
 import requests
+import json
 from telebot.types import CallbackQuery, Message
 
 from bot.functions import get_token_by_user_id
@@ -13,19 +14,6 @@ from app.pydentic_models import Habit
 )
 async def add_habit(callback: CallbackQuery):
     await bot.set_state(user_id=callback.from_user.id, state=for_add_habit)
-    # habits = """Список привычек на сегодня:
-    # Привычка_1
-    # Выполнена: [<dddd>](</done_1>)
-    # Не выполнена: /fail_1
-    # Изменить: /update_1
-    # Удалить: /delete_1
-    #
-    # Привычка_2
-    # Выполнена: /done_2
-    # Не выполнена: /fail_2
-    # Изменить: /update_2
-    # Удалить: /delete_2
-    # """
     await bot.send_message(
         chat_id=callback.from_user.id,
         text="Введите название новой привычки"
@@ -41,5 +29,5 @@ async def add_habit_1(message: Message):
     headers = {"Authorization": f"Bearer {token}"}
 
     response = requests.post("http://localhost:8000/habits", json=habit, headers=headers)
-    # print(response)
-    await bot.send_message(chat_id=message.chat.id, text="await", reply_markup=keyboard)
+    habit_name = json.loads(response.text)["name"]
+    await bot.send_message(chat_id=message.chat.id, text=f"Добавлена привычка {habit_name}", reply_markup=keyboard)
