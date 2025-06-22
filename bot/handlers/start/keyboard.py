@@ -1,3 +1,4 @@
+from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 from telebot.util import quick_markup
 
 buttons = {
@@ -5,3 +6,10 @@ buttons = {
         "login": {"callback_data": "cb_login"},
                }
 keyboard = quick_markup(buttons)
+
+main_keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
+button1 = KeyboardButton(text="Регистрация")
+button2 = KeyboardButton(text="Логин")
+button3 = KeyboardButton(text="Мои привычки")
+main_keyboard.add(button1, button2)
+main_keyboard.add(button3)
