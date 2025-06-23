@@ -5,3 +5,4 @@ from . import cb_show_habits
 from . import cb_forgot
 from . import cb_add_habit
 from . import delete_habit
+from . import update_habit
