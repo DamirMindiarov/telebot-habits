@@ -13,3 +13,7 @@ class HabitResponse(BaseModel):
 
 class HabitId(BaseModel):
     habit_id: str
+
+
+class HabitUpdate(HabitId):
+    habit_new_name: str

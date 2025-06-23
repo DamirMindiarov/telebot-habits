@@ -2,8 +2,8 @@ from fastapi import Depends, APIRouter
 
 from authorization.functions import get_current_user, refresh_token
 from authorization.pydentic_models import User
-from functions import get_habits_by_user_id, add_habit, del_habit
-from app.pydentic_models import Habit, HabitId, HabitResponse
+from app.functions import get_habits_by_user_id, add_habit, del_habit, update_habit
+from app.pydentic_models import Habit, HabitId, HabitResponse, HabitUpdate
 
 router = APIRouter()
 
@@ -32,6 +32,14 @@ async def del_habits(habit_id: HabitId, current_user: User = Depends(get_current
     await del_habit(habit_id=int(habit_id.habit_id))
     return
 
+
+@router.put("/habits")
+async def update_habits(habit: HabitUpdate, current_user: User = Depends(get_current_user)):
+    current_user = await current_user
+    await refresh_token(user_id=current_user.user_id)
+    await update_habit(habit_id=int(habit.habit_id), habit_new_name=habit.habit_new_name)
+
+    return
 
 
 
