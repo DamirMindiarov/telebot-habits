@@ -70,3 +70,11 @@ async def update_password(password: str, user_id: str):
     async with session_async() as session:
         await session.execute(update(UsersDB).where(UsersDB.user_id == user_id).values(hashed_password=hashed_password))
         await session.commit()
+
+
+async def token_is_alive(token: str):
+    try:
+        jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    except InvalidTokenError:
+        return False
+    return True
