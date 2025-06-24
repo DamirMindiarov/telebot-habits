@@ -17,3 +17,9 @@ class HabitId(BaseModel):
 
 class HabitUpdate(HabitId):
     habit_new_name: str
+
+
+class HabitToday(BaseModel):
+    id: int
+    name: str
+    completed: bool | None

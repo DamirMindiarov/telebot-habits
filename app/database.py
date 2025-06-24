@@ -1,3 +1,5 @@
+import datetime
+
 from sqlalchemy import create_engine, ForeignKey
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy.ext.asyncio import create_async_engine, async_session, async_sessionmaker, AsyncAttrs, AsyncSession
@@ -29,7 +31,7 @@ class UsersDB(Base):
     hashed_password: Mapped[str]
     token: Mapped[str] = mapped_column(nullable=True)
 
-    habits: Mapped[int] = relationship("HabitsDB", back_populates="user")
+    # habits: Mapped[int] = relationship("HabitsDB", back_populates="user")
 
 
 class HabitsDB(Base):
@@ -39,4 +41,16 @@ class HabitsDB(Base):
     count_done: Mapped[int]
     user_id: Mapped[str] = mapped_column(ForeignKey("users.user_id"))
 
-    user: Mapped[int] = relationship("UsersDB", back_populates="habits")
+    # user: Mapped[int] = relationship("UsersDB", back_populates="habits")
+
+
+class HabitsTodayDB(Base):
+    __tablename__ = "habits_today"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    completed: Mapped[bool] = mapped_column(nullable=True)
+    date: Mapped[datetime.date]
+    habit_id: Mapped[int] = mapped_column(ForeignKey("habits.id"))
+
+
+
+

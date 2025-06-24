@@ -2,8 +2,9 @@ from fastapi import Depends, APIRouter
 
 from authorization.functions import get_current_user, refresh_token
 from authorization.pydentic_models import User
-from app.functions import get_habits_by_user_id, add_habit, del_habit, update_habit
-from app.pydentic_models import Habit, HabitId, HabitResponse, HabitUpdate
+from app.functions import get_habits_by_user_id, add_habit, del_habit, update_habit, add_habit_today, get_habits_today_by_user_id
+from app.pydentic_models import Habit, HabitId, HabitResponse, HabitUpdate, HabitToday
+from database import session_async
 
 router = APIRouter()
 
@@ -21,6 +22,7 @@ async def add_habits(habit: Habit, current_user: User = Depends(get_current_user
     await refresh_token(user_id=current_user.user_id)
 
     added_habit = await add_habit(name=habit.name, count_done=habit.count_done, user_id=habit.user_id)
+    await add_habit_today(habit_id=added_habit.id)
 
     return HabitResponse(name=added_habit.name)
 
@@ -42,6 +44,14 @@ async def update_habits(habit: HabitUpdate, current_user: User = Depends(get_cur
     return
 
 
+@router.get("/habits/today")
+async def get_habits_today(current_user: User = Depends(get_current_user)) -> list[HabitToday]:
+    current_user = await current_user
+    await refresh_token(user_id=current_user.user_id)
+    habits_today = await get_habits_today_by_user_id(user_id=current_user.user_id)
+    habits_today = [HabitToday(id=habit[0], name=habit[1], completed=habit[2]) for habit in habits_today]
+
+    return habits_today
 
 
 
