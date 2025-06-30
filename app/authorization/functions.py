@@ -2,6 +2,7 @@ from fastapi import Depends, HTTPException, status
 from datetime import timedelta, timezone, datetime
 import jwt
 from jwt.exceptions import InvalidTokenError
+from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from app.database import session_async, UsersDB
 from sqlalchemy import select, update
@@ -56,13 +57,12 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     return user
 
 
-async def refresh_token(user_id: str):
+async def refresh_token(user_id: str, session: AsyncSession):
     timedelta_token_expires = timedelta(minutes=TOKEN_EXPIRE_MINUTES)
     token = create_token(username=user_id,
                          expires_delta=timedelta_token_expires)
-    async with session_async() as session:
-        await session.execute(update(UsersDB).where(UsersDB.user_id == user_id).values(token=token))
-        await session.commit()
+    await session.execute(update(UsersDB).where(UsersDB.user_id == user_id).values(token=token))
+
 
 
 async def update_password(password: str, user_id: str):

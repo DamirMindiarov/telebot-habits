@@ -5,6 +5,7 @@ from app.authorization.functions import authenticate_user, refresh_token, \
     add_user, get_current_user
 from app.authorization.config import pwd_context
 from authorization.pydentic_models import User
+from database import session_async
 
 router = APIRouter()
 
@@ -18,7 +19,10 @@ async def get_token(form_data: OAuth2PasswordRequestForm = Depends()):
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"}
         )
-    await refresh_token(user_id=user.user_id)
+    async with session_async() as session:
+        await refresh_token(user_id=user.user_id, session=session)
+        await session.commit()
+
     return
 
 

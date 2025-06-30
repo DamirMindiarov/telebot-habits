@@ -1,7 +1,7 @@
 import requests
 from telebot.types import Message
 
-from bot.functions import get_token_by_user_id
+from bot.functions import get_token_by_user_id, if_not_auth
 from loader import bot
 
 
@@ -14,7 +14,10 @@ async def delete_habit(message: Message):
     headers = {"Authorization": f"Bearer {token}"}
     response = requests.delete(url="http://localhost:8000/habits", headers=headers, json={"habit_id": str(habit_id)})
 
-    if response.status_code == 200:
+    if response.status_code == 401:
+        await if_not_auth(bot=bot, user_chat_id=message.from_user.id)
+
+    elif response.status_code == 200:
         await bot.send_message(
             chat_id=message.from_user.id,
             text="Удалено"

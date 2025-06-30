@@ -1,89 +1,95 @@
 import datetime
+import time
 
 from sqlalchemy import select, delete, update
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, PendingRollbackError
+from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import defer
 
 from database import session_async, UsersDB, HabitsDB, HabitsTodayDB
 
 
-async def get_habits_by_user_id(user_id: str) -> list[HabitsDB]:
-    async with session_async() as session:
-        habits = await session.execute(
-            select(HabitsDB).where(UsersDB.user_id == user_id))
+async def get_habits_by_user_id(user_id: str, session: AsyncSession) -> list[
+    HabitsDB]:
+    habits = await session.execute(
+        select(HabitsDB).where(UsersDB.user_id == user_id))
+    return list(habits.scalars().fetchall())
 
-    return habits.scalars().fetchall()
 
-
-async def add_habit(name: str, count_done: int, user_id: str) -> HabitsDB:
+async def add_habit(name: str, count_done: int, user_id: str,
+                    session: AsyncSession) -> HabitsDB:
     habit: HabitsDB = HabitsDB(name=name, count_done=count_done,
                                user_id=user_id)
-
-    async with session_async() as session:
-        session.add(habit)
-        await session.commit()
+    session.add(habit)
 
     return habit
 
 
-async def add_habit_today(habit_id: int):
+async def add_habit_today(habit_id: int, session: AsyncSession):
     habit_today: HabitsTodayDB = HabitsTodayDB(
         habit_id=habit_id,
         date=datetime.datetime.now().date()
     )
-    async with session_async() as session:
-        session.add(habit_today)
-        await session.commit()
+    session.add(habit_today)
 
     return
 
 
-async def del_habit(habit_id: int):
-    async with session_async() as session:
-        await session.execute(delete(HabitsDB).where(HabitsDB.id == habit_id))
-        await session.commit()
+async def del_habit(habit_id: int, session: AsyncSession):
+    await session.execute(delete(HabitsDB).where(HabitsDB.id == habit_id))
 
 
-async def update_habit(habit_id: int, habit_new_name: str):
-    async with session_async() as session:
-        await session.execute(
-            update(HabitsDB)
-            .where(HabitsDB.id == habit_id)
-            .values(name=habit_new_name)
-        )
-        await session.commit()
+async def update_habit(habit_id: int, habit_new_name: str,
+                       session: AsyncSession):
+    await session.execute(
+        update(HabitsDB)
+        .where(HabitsDB.id == habit_id)
+        .values(name=habit_new_name)
+    )
 
 
-async def get_habits_today_by_user_id(user_id: str) -> list[tuple]:
-    date = datetime.datetime.now().date()
+async def get_habits_today_by_user_id(user_id: str, session: AsyncSession) -> \
+list[tuple]:
+    # удаляю все привычки всех пользователей на вчера
+    # await session.execute(
+    #     delete(HabitsTodayDB).where(HabitsTodayDB.date < date)
+    # )
 
-    async with session_async() as session:
-        # удаляю все привычки всех пользователей на вчера
-        await session.execute(
-            delete(HabitsTodayDB).where(HabitsTodayDB.date < date)
-        )
-        await session.commit()
+    # беру из таблицы HabitsTodayDB все привычки этого пользователя
 
-        await from_habits_into_habits_today(user_id)
-        # беру из таблицы HabitsTodayDB все привычки этого пользователя
-        habits_today = await session.execute(
-            select(HabitsDB.id, HabitsDB.name, HabitsTodayDB.completed).
-            join(HabitsTodayDB).
-            where(HabitsDB.user_id == user_id)
-        )
-    habits_today = habits_today.fetchall()
+    habits_today = await session.execute(
+        select(HabitsDB.id, HabitsDB.name, HabitsTodayDB.completed).
+        join(HabitsTodayDB).
+        where(HabitsDB.user_id == user_id)
+    )
+
+    habits_today = [tuple(habit_today) for habit_today in
+                    habits_today.fetchall()]
     return habits_today
 
 
-async def from_habits_into_habits_today(user_id: str):
-    habits: list[HabitsDB] = await get_habits_by_user_id(user_id)
+async def from_habits_into_habits_today(user_id: str, session: AsyncSession):
+    habits: list[HabitsDB] = await get_habits_by_user_id(user_id,
+                                                         session=session)
     list_habits_id = [habit.id for habit in habits]
 
     for habit_id in list_habits_id:
         try:
-            await add_habit_today(habit_id=habit_id)
+            await add_habit_today(habit_id=habit_id, session=session)
         except IntegrityError:
             continue
 
 
+async def delete_old_habits_from_today_habits(session: AsyncSession) -> bool:
+    date = datetime.datetime.now().date()
 
+    result = await session.execute(
+        delete(HabitsTodayDB).where(HabitsTodayDB.date < date)
+    )
+    return True if result else False
+
+
+async def check_empty_habits_today(session: AsyncSession) -> bool:
+    result = await session.execute(select(HabitsTodayDB))
+    result = result.scalars().fetchall()
+    return False if result else True
