@@ -49,7 +49,7 @@ class HabitsTodayDB(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     completed: Mapped[bool] = mapped_column(nullable=True)
     date: Mapped[datetime.date]
-    habit_id: Mapped[int] = mapped_column(ForeignKey("habits.id"))
+    habit_id: Mapped[int] = mapped_column(ForeignKey("habits.id"), unique=True)
 
 
 

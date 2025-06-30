@@ -1,12 +1,13 @@
 import datetime
 
 from sqlalchemy import select, delete, update
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import defer
 
 from database import session_async, UsersDB, HabitsDB, HabitsTodayDB
 
 
-async def get_habits_by_user_id(user_id: str) -> str:
+async def get_habits_by_user_id(user_id: str) -> list[HabitsDB]:
     async with session_async() as session:
         habits = await session.execute(
             select(HabitsDB).where(UsersDB.user_id == user_id))
@@ -63,6 +64,7 @@ async def get_habits_today_by_user_id(user_id: str) -> list[tuple]:
         )
         await session.commit()
 
+        await from_habits_into_habits_today(user_id)
         # беру из таблицы HabitsTodayDB все привычки этого пользователя
         habits_today = await session.execute(
             select(HabitsDB.id, HabitsDB.name, HabitsTodayDB.completed).
@@ -71,3 +73,17 @@ async def get_habits_today_by_user_id(user_id: str) -> list[tuple]:
         )
     habits_today = habits_today.fetchall()
     return habits_today
+
+
+async def from_habits_into_habits_today(user_id: str):
+    habits: list[HabitsDB] = await get_habits_by_user_id(user_id)
+    list_habits_id = [habit.id for habit in habits]
+
+    for habit_id in list_habits_id:
+        try:
+            await add_habit_today(habit_id=habit_id)
+        except IntegrityError:
+            continue
+
+
+
