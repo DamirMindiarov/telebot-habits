@@ -71,7 +71,7 @@ list[tuple]:
 async def from_habits_into_habits_today(user_id: str, session: AsyncSession):
     habits: list[HabitsDB] = await get_habits_by_user_id(user_id,
                                                          session=session)
-    list_habits_id = [habit.id for habit in habits]
+    list_habits_id = [habit.id for habit in habits if habit.count_done < 21]
 
     for habit_id in list_habits_id:
         try:
