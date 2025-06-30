@@ -2,7 +2,7 @@ from fastapi import Depends, APIRouter
 
 from authorization.functions import get_current_user, refresh_token
 from authorization.pydentic_models import User
-from app.functions import get_habits_by_user_id, add_habit, del_habit, update_habit, add_habit_today, get_habits_today_by_user_id, from_habits_into_habits_today, delete_old_habits_from_today_habits, check_empty_habits_today
+from app.functions import get_habits_by_user_id, add_habit, del_habit, update_habit, add_habit_today, get_habits_today_by_user_id, from_habits_into_habits_today, delete_old_habits_from_today_habits, check_empty_habits_today, delete_from_habits_today_by_habit_id, update_count_done
 from app.pydentic_models import Habit, HabitId, HabitResponse, HabitUpdate, HabitToday
 from database import session_async
 
@@ -81,11 +81,21 @@ async def get_habits_today(current_user: User = Depends(get_current_user)) -> li
     return habits_today
 
 
+@router.put("/habits/today")
+async def route_habit_today_done(habit_id: HabitId, current_user: User = Depends(get_current_user)):
+    current_user = await current_user
+
+    async with session_async() as session:
+        await delete_from_habits_today_by_habit_id(habit_id=int(habit_id.habit_id), session=session)
+        await update_count_done(habit_id=int(habit_id.habit_id), session=session)
+
+        await refresh_token(user_id=current_user.user_id, session=session)
+        await session.commit()
+
+    return
 
 
 
-#
-#
 # @router.post("/test_token")
 # async def test_token(current_user: User = Depends(get_current_user)):
 #     current_user = await current_user

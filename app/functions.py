@@ -93,3 +93,17 @@ async def check_empty_habits_today(session: AsyncSession) -> bool:
     result = await session.execute(select(HabitsTodayDB))
     result = result.scalars().fetchall()
     return False if result else True
+
+
+async def delete_from_habits_today_by_habit_id(habit_id: int, session: AsyncSession):
+    await session.execute(
+        delete(HabitsTodayDB).where(HabitsTodayDB.habit_id == habit_id)
+    )
+    return
+
+async def update_count_done(habit_id: int, session: AsyncSession):
+    await session.execute(
+        update(HabitsDB).where(HabitsDB.id == habit_id)
+        .values(count_done=HabitsDB.count_done + 1)
+    )
+    return
