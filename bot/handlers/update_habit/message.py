@@ -62,8 +62,10 @@ async def update_habit_1(message: Message):
         headers=headers,
     )
 
-    if response.status_code == 200:
+    if response.status_code == 200 and response.text != "null":
         text = "Привычка обновлена"
+    elif response.status_code == 200:
+        text = "У вас не привычки с таким id"
     else:
         text = "Что-то пошло не так"
 

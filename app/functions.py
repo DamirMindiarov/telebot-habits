@@ -36,8 +36,9 @@ async def add_habit_today(habit_id: int, session: AsyncSession):
 
 
 async def del_habit(habit_id: int, session: AsyncSession):
-    await session.execute(delete(HabitsDB).where(HabitsDB.id == habit_id))
-
+    await session.execute(delete(HabitsTodayDB).where(HabitsTodayDB.id == habit_id))
+    habit = await session.execute(delete(HabitsDB).where(HabitsDB.id == habit_id))
+    return habit
 
 async def update_habit(habit_id: int, habit_new_name: str,
                        session: AsyncSession):

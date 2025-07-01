@@ -31,7 +31,8 @@ class UsersDB(Base):
     hashed_password: Mapped[str]
     token: Mapped[str] = mapped_column(nullable=True)
 
-    # habits: Mapped[int] = relationship("HabitsDB", back_populates="user")
+    habits: Mapped[list["HabitsDB"]] = relationship("HabitsDB", back_populates="user")
+    today_habits: Mapped[list["HabitsTodayDB"]] = relationship("HabitsTodayDB", back_populates="habit")
 
 
 class HabitsDB(Base):
@@ -41,15 +42,19 @@ class HabitsDB(Base):
     count_done: Mapped[int]
     user_id: Mapped[str] = mapped_column(ForeignKey("users.user_id"))
 
-    # user: Mapped[int] = relationship("UsersDB", back_populates="habits")
+    user: Mapped["UsersDB"] = relationship("UsersDB", back_populates="habits")
 
 
 class HabitsTodayDB(Base):
     __tablename__ = "habits_today"
     id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str]
     completed: Mapped[bool] = mapped_column(nullable=True)
     date: Mapped[datetime.date]
     habit_id: Mapped[int] = mapped_column(ForeignKey("habits.id"), unique=True)
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.user_id"))
+
+    habit: Mapped["UsersDB"] = relationship("UsersDB", back_populates="today_habits")
 
 
 

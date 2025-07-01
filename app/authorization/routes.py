@@ -12,14 +12,15 @@ router = APIRouter()
 
 @router.post("/token")
 async def get_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = await authenticate_user(form_data.username, form_data.password)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"}
-        )
     async with session_async() as session:
+        user = await authenticate_user(form_data.username, form_data.password, session)
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Incorrect username or password",
+                headers={"WWW-Authenticate": "Bearer"}
+            )
+
         await refresh_token(user_id=user.user_id, session=session)
         await session.commit()
 

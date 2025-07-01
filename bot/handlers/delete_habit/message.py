@@ -17,10 +17,15 @@ async def delete_habit(message: Message):
     if response.status_code == 401:
         await if_not_auth(bot=bot, user_chat_id=message.from_user.id)
 
-    elif response.status_code == 200:
+    elif response.status_code == 200 and response.text != "null":
         await bot.send_message(
             chat_id=message.from_user.id,
             text="Удалено"
+        )
+    elif response.status_code == 200:
+        await bot.send_message(
+            chat_id=message.from_user.id,
+            text="У вас нет привычки с таким id"
         )
     else:
         await bot.send_message(

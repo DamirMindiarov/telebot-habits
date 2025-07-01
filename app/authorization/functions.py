@@ -3,6 +3,7 @@ from datetime import timedelta, timezone, datetime
 import jwt
 from jwt.exceptions import InvalidTokenError
 from sqlalchemy.ext.asyncio.session import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.database import session_async, UsersDB
 from sqlalchemy import select, update
@@ -13,14 +14,17 @@ def verify_password(password, hashed_password):
     return pwd_context.verify(password, hashed_password)
 
 
-async def get_user(username: str):
-    async with session_async() as session:
-        user = await session.execute(select(UsersDB).where(UsersDB.user_id == username))
+async def get_user(username: str, session: AsyncSession) -> UsersDB:
+    user = await session.execute(select(UsersDB).where(UsersDB.user_id == username).options(
+        selectinload(UsersDB.habits), selectinload(UsersDB.today_habits)))
+    # async with session_async() as session:
+    #     user = await session.execute(select(UsersDB).where(UsersDB.user_id == username).options(selectinload(UsersDB.habits)))
+    #     # await session.refresh(user, ["habits"])
     return user.scalar()
 
 
-async def authenticate_user(username: str, password: str):
-    user = await get_user(username)
+async def authenticate_user(username: str, password: str, session: AsyncSession):
+    user = await get_user(username, session)
     if not user:
         return False
     if not verify_password(password, user.hashed_password):
@@ -43,7 +47,7 @@ async def add_user(username: str, hashed_password: str):
     return user
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme)):
+async def get_current_user(token, session: AsyncSession):
     credential_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -53,7 +57,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
     except InvalidTokenError:
         raise credential_exception
-    user = get_user(payload["username"])
+    user = await get_user(payload["username"], session)
     return user
 
 
