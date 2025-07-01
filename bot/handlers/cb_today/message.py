@@ -29,10 +29,15 @@ async def show_today_habits(callback: CallbackQuery):
 
         habits_today = ast.literal_eval(text)
         sample_habit = """{name}\nВыполнено: /done{id_habit_today}"""
+        sample_completed_habit = """{name}\nВыполнено: ✅"""
         list_habits = "Список привычек на сегодня:\n"
 
         for habit_today in habits_today:
-            list_habits += sample_habit.format(name=habit_today["name"], id_habit_today=habit_today["id"])
+            if habit_today["completed"]:
+                list_habits += sample_completed_habit.format(name=habit_today["name"])
+            else:
+                list_habits += sample_habit.format(name=habit_today["name"], id_habit_today=habit_today["id"])
+
             list_habits += "\n\n"
 
         await bot.send_message(chat_id=callback.from_user.id, text=list_habits)
