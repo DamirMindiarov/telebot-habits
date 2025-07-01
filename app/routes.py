@@ -5,6 +5,7 @@ from authorization.pydentic_models import User
 from app.functions import get_habits_by_user_id, add_habit, del_habit, update_habit, add_habit_today, get_habits_today_by_user_id, from_habits_into_habits_today, delete_old_habits_from_today_habits, check_date_habits_today, update_completed_habits_today_by_habit_id, update_count_done
 from app.pydentic_models import Habit, HabitId, HabitResponse, HabitUpdate, HabitToday
 from database import session_async
+from functions import check_completed_habits_today
 
 router = APIRouter()
 
@@ -84,15 +85,20 @@ async def get_habits_today(current_user: User = Depends(get_current_user)) -> li
 @router.put("/habits/today")
 async def route_habit_today_done(habit_id: HabitId, current_user: User = Depends(get_current_user)):
     current_user = await current_user
+    text = None
 
     async with session_async() as session:
-        await update_completed_habits_today_by_habit_id(habit_id=int(habit_id.habit_id), session=session)
-        await update_count_done(habit_id=int(habit_id.habit_id), session=session)
+        habit_already_completed_today = await check_completed_habits_today(habit_id=int(habit_id.habit_id), session=session)
+
+        if not habit_already_completed_today:
+            await update_completed_habits_today_by_habit_id(habit_id=int(habit_id.habit_id), session=session)
+            await update_count_done(habit_id=int(habit_id.habit_id), session=session)
+            text = "completed"
 
         await refresh_token(user_id=current_user.user_id, session=session)
         await session.commit()
 
-    return
+    return text
 
 
 

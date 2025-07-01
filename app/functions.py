@@ -49,7 +49,7 @@ async def update_habit(habit_id: int, habit_new_name: str,
 
 
 async def get_habits_today_by_user_id(user_id: str, session: AsyncSession) -> \
-list[tuple]:
+        list[tuple]:
     # удаляю все привычки всех пользователей на вчера
     # await session.execute(
     #     delete(HabitsTodayDB).where(HabitsTodayDB.date < date)
@@ -91,16 +91,20 @@ async def delete_old_habits_from_today_habits(session: AsyncSession) -> bool:
 
 async def check_date_habits_today(session: AsyncSession) -> bool:
     date = datetime.datetime.now().date()
-    result = await session.execute(select(HabitsTodayDB).where(HabitsTodayDB.date == date))
+    result = await session.execute(
+        select(HabitsTodayDB).where(HabitsTodayDB.date == date))
     result = result.scalars().fetchall()
     return False if result else True
 
 
-async def update_completed_habits_today_by_habit_id(habit_id: int, session: AsyncSession):
+async def update_completed_habits_today_by_habit_id(habit_id: int,
+                                                    session: AsyncSession):
     await session.execute(
-        update(HabitsTodayDB).where(HabitsTodayDB.habit_id == habit_id).values(completed=True)
+        update(HabitsTodayDB).where(HabitsTodayDB.habit_id == habit_id).values(
+            completed=True)
     )
     return
+
 
 async def update_count_done(habit_id: int, session: AsyncSession):
     await session.execute(
@@ -108,3 +112,13 @@ async def update_count_done(habit_id: int, session: AsyncSession):
         .values(count_done=HabitsDB.count_done + 1)
     )
     return
+
+
+async def check_completed_habits_today(habit_id: int, session: AsyncSession):
+    result = await session.execute(
+        select(HabitsTodayDB)
+        .where(HabitsTodayDB.habit_id == habit_id,
+               HabitsTodayDB.completed == True)
+    )
+    result = result.scalars().fetchall()
+    return True if result else False
