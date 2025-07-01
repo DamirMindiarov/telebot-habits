@@ -12,7 +12,7 @@ from database import session_async, UsersDB, HabitsDB, HabitsTodayDB
 async def get_habits_by_user_id(user_id: str, session: AsyncSession) -> list[
     HabitsDB]:
     habits = await session.execute(
-        select(HabitsDB).where(UsersDB.user_id == user_id))
+        select(HabitsDB).where(HabitsDB.user_id == user_id))
     return list(habits.scalars().fetchall())
 
 
