@@ -89,15 +89,16 @@ async def delete_old_habits_from_today_habits(session: AsyncSession) -> bool:
     return True if result else False
 
 
-async def check_empty_habits_today(session: AsyncSession) -> bool:
-    result = await session.execute(select(HabitsTodayDB))
+async def check_date_habits_today(session: AsyncSession) -> bool:
+    date = datetime.datetime.now().date()
+    result = await session.execute(select(HabitsTodayDB).where(HabitsTodayDB.date == date))
     result = result.scalars().fetchall()
     return False if result else True
 
 
-async def delete_from_habits_today_by_habit_id(habit_id: int, session: AsyncSession):
+async def update_completed_habits_today_by_habit_id(habit_id: int, session: AsyncSession):
     await session.execute(
-        delete(HabitsTodayDB).where(HabitsTodayDB.habit_id == habit_id)
+        update(HabitsTodayDB).where(HabitsTodayDB.habit_id == habit_id).values(completed=True)
     )
     return
 

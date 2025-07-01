@@ -2,7 +2,7 @@ from fastapi import Depends, APIRouter
 
 from authorization.functions import get_current_user, refresh_token
 from authorization.pydentic_models import User
-from app.functions import get_habits_by_user_id, add_habit, del_habit, update_habit, add_habit_today, get_habits_today_by_user_id, from_habits_into_habits_today, delete_old_habits_from_today_habits, check_empty_habits_today, delete_from_habits_today_by_habit_id, update_count_done
+from app.functions import get_habits_by_user_id, add_habit, del_habit, update_habit, add_habit_today, get_habits_today_by_user_id, from_habits_into_habits_today, delete_old_habits_from_today_habits, check_date_habits_today, update_completed_habits_today_by_habit_id, update_count_done
 from app.pydentic_models import Habit, HabitId, HabitResponse, HabitUpdate, HabitToday
 from database import session_async
 
@@ -69,7 +69,7 @@ async def get_habits_today(current_user: User = Depends(get_current_user)) -> li
     async with session_async() as session:
         await delete_old_habits_from_today_habits(session=session)
 
-        if await check_empty_habits_today(session=session):
+        if await check_date_habits_today(session=session):
             await from_habits_into_habits_today(user_id=current_user.user_id, session=session)
 
         habits_today = await get_habits_today_by_user_id(user_id=current_user.user_id, session=session)
@@ -86,7 +86,7 @@ async def route_habit_today_done(habit_id: HabitId, current_user: User = Depends
     current_user = await current_user
 
     async with session_async() as session:
-        await delete_from_habits_today_by_habit_id(habit_id=int(habit_id.habit_id), session=session)
+        await update_completed_habits_today_by_habit_id(habit_id=int(habit_id.habit_id), session=session)
         await update_count_done(habit_id=int(habit_id.habit_id), session=session)
 
         await refresh_token(user_id=current_user.user_id, session=session)

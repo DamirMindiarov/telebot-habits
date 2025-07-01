@@ -22,7 +22,12 @@ async def show_today_habits(callback: CallbackQuery):
         await if_not_auth(bot=bot, user_chat_id=callback.from_user.id)
         return
     elif response.status_code == 200:
-        habits_today = ast.literal_eval(response.text.replace("null", "None"))
+        text = response.text
+        text = text.replace("null", "None")
+        text = text.replace("true", "True")
+        text = text.replace("false", "False")
+
+        habits_today = ast.literal_eval(text)
         sample_habit = """{name}\nВыполнено: /done{id_habit_today}"""
         list_habits = "Список привычек на сегодня:\n"
 
