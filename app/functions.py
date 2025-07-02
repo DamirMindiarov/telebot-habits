@@ -36,7 +36,7 @@ from database import HabitsDB, HabitsTodayDB
 
 
 async def del_habit(habit_id: int, session: AsyncSession) -> CursorResult:
-    """Удаляет привычку по ее id"""
+    """Удаляет привычку из HabitsTodayDB и HabitsDB по ее id"""
     await session.execute(
         delete(HabitsTodayDB).where(HabitsTodayDB.id == habit_id)
     )

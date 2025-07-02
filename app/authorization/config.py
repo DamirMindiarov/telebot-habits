@@ -6,5 +6,5 @@ ALGORITHM = "HS256"
 TOKEN_EXPIRE_MINUTES = 100
 
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated='auto')
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
