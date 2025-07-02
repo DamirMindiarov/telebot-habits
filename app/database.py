@@ -1,19 +1,22 @@
 import datetime
 
-from sqlalchemy import create_engine, ForeignKey
+from sqlalchemy import ForeignKey
+from sqlalchemy.ext.asyncio import (
+    create_async_engine,
+    async_sessionmaker,
+    AsyncAttrs,
+)
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-from sqlalchemy.ext.asyncio import create_async_engine, async_session, async_sessionmaker, AsyncAttrs, AsyncSession
 
-# db_url = "postgresql+psycopg2://admin:admin@localhost:5432/habits"
 db_url_async = "postgresql+asyncpg://admin:admin@localhost:5432/habits"
 
-# engine_sync = create_engine(url=db_url)
 engine_async = create_async_engine(url=db_url_async, echo=False)
 
 session_async = async_sessionmaker(bind=engine_async, expire_on_commit=False)
 
 
 async def create_db():
+    """Создает таблицы в БД"""
     async with engine_async.begin() as conn:
         # await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
@@ -31,8 +34,12 @@ class UsersDB(Base):
     hashed_password: Mapped[str]
     token: Mapped[str] = mapped_column(nullable=True)
 
-    habits: Mapped[list["HabitsDB"]] = relationship("HabitsDB", back_populates="user")
-    today_habits: Mapped[list["HabitsTodayDB"]] = relationship("HabitsTodayDB", back_populates="habit")
+    habits: Mapped[list["HabitsDB"]] = relationship(
+        "HabitsDB", back_populates="user"
+    )
+    today_habits: Mapped[list["HabitsTodayDB"]] = relationship(
+        "HabitsTodayDB", back_populates="habit"
+    )
 
 
 class HabitsDB(Base):
@@ -54,8 +61,6 @@ class HabitsTodayDB(Base):
     habit_id: Mapped[int] = mapped_column(ForeignKey("habits.id"), unique=True)
     user_id: Mapped[str] = mapped_column(ForeignKey("users.user_id"))
 
-    habit: Mapped["UsersDB"] = relationship("UsersDB", back_populates="today_habits")
-
-
-
-
+    habit: Mapped["UsersDB"] = relationship(
+        "UsersDB", back_populates="today_habits"
+    )
