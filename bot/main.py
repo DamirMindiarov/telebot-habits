@@ -1,5 +1,5 @@
 import asyncio
-import handlers
+from notifications import scheduler
 from telebot import asyncio_filters
 
 from loader import bot

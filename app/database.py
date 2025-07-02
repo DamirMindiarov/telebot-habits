@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_session, async_ses
 db_url_async = "postgresql+asyncpg://admin:admin@localhost:5432/habits"
 
 # engine_sync = create_engine(url=db_url)
-engine_async = create_async_engine(url=db_url_async, echo=True)
+engine_async = create_async_engine(url=db_url_async, echo=False)
 
 session_async = async_sessionmaker(bind=engine_async, expire_on_commit=False)
 
