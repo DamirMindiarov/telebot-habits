@@ -13,6 +13,7 @@ from loader import bot
     func=lambda callback: callback.data == "cb_show_habits"
 )
 async def show_habits(callback: CallbackQuery):
+    """В ответ на нажатие кнопки отправляет пользователю текущий список его привычек"""
     token = await get_token_by_user_id(user_id=str(callback.from_user.id))
     headers = {"Authorization": f"Bearer {token}"}
 
@@ -28,9 +29,11 @@ async def show_habits(callback: CallbackQuery):
     list_habits = "Список привычек:\n"
 
     for habit in habits:
-        list_habits += sample_habit.format(name=habit["name"],
-                                           count_done=habit["count_done"],
-                                           id_habit=habit["id"])
+        list_habits += sample_habit.format(
+            name=habit["name"],
+            count_done=habit["count_done"],
+            id_habit=habit["id"],
+        )
         list_habits += "\n\n"
 
     await bot.send_message(

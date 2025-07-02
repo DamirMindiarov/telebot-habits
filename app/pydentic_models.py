@@ -20,6 +20,6 @@ class HabitUpdate(HabitId):
 
 
 class HabitToday(BaseModel):
-    id: int
+    habit_id: int
     name: str
     completed: bool | None

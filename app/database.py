@@ -38,7 +38,7 @@ class UsersDB(Base):
         "HabitsDB", back_populates="user"
     )
     today_habits: Mapped[list["HabitsTodayDB"]] = relationship(
-        "HabitsTodayDB", back_populates="habit"
+        "HabitsTodayDB", back_populates="user"
     )
 
 
@@ -50,6 +50,7 @@ class HabitsDB(Base):
     user_id: Mapped[str] = mapped_column(ForeignKey("users.user_id"))
 
     user: Mapped["UsersDB"] = relationship("UsersDB", back_populates="habits")
+    # today: Mapped["HabitsTodayDB"] = relationship("HabitsTodayDB", back_populates="habit")
 
 
 class HabitsTodayDB(Base):
@@ -61,6 +62,7 @@ class HabitsTodayDB(Base):
     habit_id: Mapped[int] = mapped_column(ForeignKey("habits.id"), unique=True)
     user_id: Mapped[str] = mapped_column(ForeignKey("users.user_id"))
 
-    habit: Mapped["UsersDB"] = relationship(
+    user: Mapped["UsersDB"] = relationship(
         "UsersDB", back_populates="today_habits"
     )
+    # habit: Mapped["HabitsDB"] = relationship("HabitsDB", back_populates="today")

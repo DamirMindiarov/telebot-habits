@@ -40,6 +40,7 @@ async def del_habit(habit_id: int, session: AsyncSession) -> CursorResult:
     await session.execute(
         delete(HabitsTodayDB).where(HabitsTodayDB.id == habit_id)
     )
+    await session.commit()
     habit = await session.execute(
         delete(HabitsDB).where(HabitsDB.id == habit_id)
     )

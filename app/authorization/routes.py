@@ -35,7 +35,7 @@ async def get_token(form_data: OAuth2PasswordRequestForm = Depends()):
 @router.post("/registration", status_code=status.HTTP_201_CREATED)
 async def registration_user(
     form_data: OAuth2PasswordRequestForm = Depends(),
-) -> UsersDB:
+):
     """Регистрирует нового пользователя"""
     user = await add_user(
         form_data.username, pwd_context.hash(form_data.password)

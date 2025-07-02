@@ -1,10 +1,10 @@
 import asyncio
-from notifications import scheduler
+import handlers
 from telebot import asyncio_filters
 
 from loader import bot
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Add custom filters
     bot.add_custom_filter(asyncio_filters.StateFilter(bot))
     # necessary for state parameter in handlers.
