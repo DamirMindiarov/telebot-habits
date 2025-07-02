@@ -2,17 +2,14 @@ import datetime
 
 from fastapi import Depends, APIRouter
 
-from authorization.config import oauth2_scheme
-from authorization.functions import get_current_user, refresh_token
-from authorization.pydentic_models import User
-from app.functions import get_habits_by_user_id, add_habit, del_habit, \
-    update_habit, add_habit_today, get_habits_today_by_user_id, \
-    from_habits_into_habits_today, delete_old_habits_from_today_habits, \
-    check_date_habits_today, update_completed_habits_today_by_habit_id, \
-    update_count_done
+from app.database import session_async, HabitsDB, HabitsTodayDB
+from app.functions import del_habit, \
+    delete_old_habits_from_today_habits, \
+    check_date_habits_today
 from app.pydentic_models import Habit, HabitId, HabitResponse, HabitUpdate, \
     HabitToday
-from app.database import session_async, HabitsDB, HabitsTodayDB
+from authorization.config import oauth2_scheme
+from authorization.functions import get_current_user, refresh_token
 from functions import check_completed_habits_today
 
 router = APIRouter()
