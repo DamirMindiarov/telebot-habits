@@ -1,17 +1,14 @@
 import asyncio
 import datetime
-import time
 
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
 from telebot.async_telebot import AsyncTeleBot
 
-from bot.loader import bot
-from app.database import session_async, UsersDB
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
-
 from app.database import HabitsDB, HabitsTodayDB
+from app.database import session_async
+from bot.loader import bot
 
 scheduler = AsyncIOScheduler()
 
