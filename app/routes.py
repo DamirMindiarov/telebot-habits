@@ -169,3 +169,22 @@ async def route_habit_today_done(
         await session.commit()
 
     return text
+
+
+@router.put("/habits/notifications")
+async def notifications(token: str = Depends(oauth2_scheme)):
+    # result = None
+    async with session_async() as session:
+        current_user = await get_current_user(token, session)
+
+        if current_user.notifications == "+":
+            current_user.notifications = "-"
+            result = "Отключено"
+        elif current_user.notifications == "-":
+            current_user.notifications = "+"
+            result = "Включено"
+
+        await refresh_token(user_id=current_user.user_id, session=session)
+        await session.commit()
+
+    return result

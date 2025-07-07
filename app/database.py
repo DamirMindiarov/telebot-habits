@@ -33,6 +33,7 @@ class UsersDB(Base):
     user_id: Mapped[str] = mapped_column(unique=True)
     hashed_password: Mapped[str]
     token: Mapped[str] = mapped_column(nullable=True)
+    notifications: Mapped[str] = mapped_column(default="+")
 
     habits: Mapped[list["HabitsDB"]] = relationship(
         "HabitsDB", back_populates="user"

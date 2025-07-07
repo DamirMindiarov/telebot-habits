@@ -6,7 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from telebot.async_telebot import AsyncTeleBot
 
-from app.database import HabitsDB, HabitsTodayDB
+from app.database import HabitsDB, HabitsTodayDB, UsersDB
 from app.database import session_async
 from bot.loader import bot
 
@@ -34,11 +34,20 @@ async def get_users_id(session: AsyncSession):
         .where(HabitsTodayDB.date == None)
     )
 
+    ui_with_notifications_on = await session.execute(
+        select(UsersDB.user_id)
+        .where(UsersDB.notifications == "+")
+    )
+
     ui_not_count_done = list(ui_not_count_done.scalars().fetchall())
     ui_not_complete = list(ui_not_complete.scalars().fetchall())
     ui_not_date = list(ui_not_date.scalars().fetchall())
+    ui_with_notifications_on = list(ui_with_notifications_on.scalars().fetchall())
 
     users_needs_notifications = set(ui_not_count_done).intersection(set(ui_not_complete + ui_not_date))
+    users_needs_notifications = set(ui_with_notifications_on).intersection(users_needs_notifications)
+
+    print(ui_with_notifications_on)
     return list(users_needs_notifications)
 
 

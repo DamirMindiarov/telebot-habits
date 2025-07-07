@@ -9,3 +9,4 @@ from . import update_habit
 from . import cb_today
 from . import done
 from . import help
+from . import cb_notifications
