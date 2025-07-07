@@ -3,7 +3,7 @@ import datetime
 from sqlalchemy import select, delete, CursorResult
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from database import HabitsDB, HabitsTodayDB
+from database import HabitsDB, HabitsTodayDB, UsersDB
 
 
 # async def get_habits_by_user_id(
@@ -143,3 +143,21 @@ async def check_completed_habits_today(
     )
     result = result.scalars().fetchall()
     return True if result else False
+
+
+# async def make_habits_today(session: AsyncSession, current_user: UsersDB):
+#     await delete_old_habits_from_today_habits(session=session)
+#
+#     if not current_user.today_habits:
+#         less_then_21 = [
+#             habit for habit in current_user.habits if habit.count_done < 21
+#         ]
+#
+#         for habit in less_then_21:
+#             habit_today = HabitsTodayDB(
+#                 name=habit.name,
+#                 date=datetime.datetime.now().date(),
+#                 habit_id=habit.id,
+#                 user_id=habit.user_id,
+#             )
+#             current_user.today_habits.append(habit_today)

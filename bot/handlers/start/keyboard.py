@@ -8,9 +8,9 @@ buttons = {
 keyboard = quick_markup(buttons)
 
 main_keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
-button1 = KeyboardButton(text="Регистрация")
-button2 = KeyboardButton(text="Логин")
-button3 = KeyboardButton(text="Мои привычки")
-button4 = KeyboardButton(text="На сегодня")
+button1 = KeyboardButton(text="🎓Регистрация")
+button2 = KeyboardButton(text="👔Логин")
+button3 = KeyboardButton(text="📋Мои привычки")
+button4 = KeyboardButton(text="✔️На сегодня")
 main_keyboard.add(button1, button2)
 main_keyboard.add(button3, button4)
