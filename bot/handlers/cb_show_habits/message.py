@@ -8,7 +8,7 @@ from bot.handlers.cb_show_habits.keyboard import keyboard
 from loader import bot
 
 
-@bot.message_handler(func=lambda callback: callback.text == "Мои привычки")
+@bot.message_handler(func=lambda callback: callback.text == "📋Мои привычки")
 @bot.callback_query_handler(
     func=lambda callback: callback.data == "cb_show_habits"
 )

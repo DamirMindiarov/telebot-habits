@@ -10,7 +10,7 @@ from loader import bot
 from app.database import session_async, HabitsTodayDB, HabitsDB
 
 
-@bot.message_handler(func=lambda callback: callback.text == "На сегодня")
+@bot.message_handler(func=lambda callback: callback.text == "✔️На сегодня")
 @bot.callback_query_handler(func=lambda callback: callback.data == "cb_today")
 async def show_today_habits(callback: CallbackQuery):
     """В ответ на нажатие кнопки отправляет пользователю текущий список привычек, которые необходимо выполнить сегодня"""

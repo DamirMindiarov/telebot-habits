@@ -6,7 +6,7 @@ from states import PasswordStates
 from bot.handlers.cb_registration.keyboard import keyboard
 
 
-@bot.message_handler(func=lambda callback: callback.text == "Регистрация")
+@bot.message_handler(func=lambda callback: callback.text == "🎓Регистрация")
 @bot.callback_query_handler(
     func=lambda callback: callback.data == "cb_registration"
 )

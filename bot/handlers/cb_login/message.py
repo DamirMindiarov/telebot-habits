@@ -9,7 +9,7 @@ from bot.handlers.cb_login.keyboard import (
 )
 
 
-@bot.message_handler(func=lambda callback: callback.text == "Логин")
+@bot.message_handler(func=lambda callback: callback.text == "👔Логин")
 @bot.callback_query_handler(func=lambda callback: callback.data == "cb_login")
 async def login(callback: CallbackQuery):
     """В ответ на нажатие кнопки переключает состояние и отправляется сообщение с просьбой ввести пароль"""
