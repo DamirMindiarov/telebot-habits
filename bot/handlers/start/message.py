@@ -13,8 +13,8 @@ async def send_welcome(message: Message):
         chat_id=message.from_user.id, text=text, reply_markup=keyboard
     )
 
-    await bot.send_message(
-        chat_id=message.from_user.id,
-        text="Так же есть удобная навигация на клавиатуре",
-        reply_markup=main_keyboard,
-    )
+    # await bot.send_message(
+    #     chat_id=message.from_user.id,
+    #     text="Так же есть удобная навигация на клавиатуре",
+    #     reply_markup=main_keyboard,
+    # )

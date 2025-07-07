@@ -8,3 +8,4 @@ from . import delete_habit
 from . import update_habit
 from . import cb_today
 from . import done
+from . import help
