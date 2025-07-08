@@ -10,3 +10,4 @@ from . import cb_today
 from . import done
 from . import help
 from . import cb_notifications
+from . import settings
