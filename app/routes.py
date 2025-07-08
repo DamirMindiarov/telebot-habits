@@ -172,8 +172,10 @@ async def route_habit_today_done(
 
 
 @router.put("/habits/notifications")
-async def notifications(token: str = Depends(oauth2_scheme)):
-    # result = None
+async def notifications(token: str = Depends(oauth2_scheme)) -> str:
+    """
+    Переключает состояние уведомлений с "получать" на "не получать" и наоборот.
+    """
     async with session_async() as session:
         current_user = await get_current_user(token, session)
 

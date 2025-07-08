@@ -47,7 +47,6 @@ async def get_users_id(session: AsyncSession):
     users_needs_notifications = set(ui_not_count_done).intersection(set(ui_not_complete + ui_not_date))
     users_needs_notifications = set(ui_with_notifications_on).intersection(users_needs_notifications)
 
-    print(ui_with_notifications_on)
     return list(users_needs_notifications)
 
 
@@ -70,7 +69,7 @@ async def main():
     #  1.2) если у пользователя в таблице HabitsTodayDB отсутствует привычка с сегодняшней датой
     scheduler.add_job(myfunc,
                       'interval',
-                      seconds=5,
+                      minutes=5,
                       id='my_job_id',
                       kwargs={'my_bot': bot}
                       )
