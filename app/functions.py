@@ -1,6 +1,6 @@
 import datetime
 
-from sqlalchemy import select, delete, CursorResult
+from sqlalchemy import select, delete, CursorResult, update
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from database import HabitsDB, HabitsTodayDB, UsersDB
@@ -161,3 +161,31 @@ async def check_completed_habits_today(
 #                 user_id=habit.user_id,
 #             )
 #             current_user.today_habits.append(habit_today)
+
+
+async def update_count_days_for_habits_by_user_id(user_id: str, days: int, session: AsyncSession):
+    """Обновляет колонку days_to_form в таблице Habits"""
+    await session.execute(
+        update(HabitsDB)
+        .where(HabitsDB.user_id == user_id)
+        .values(days_to_form=days)
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

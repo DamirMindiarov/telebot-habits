@@ -23,3 +23,7 @@ class HabitToday(BaseModel):
     habit_id: int
     name: str
     completed: bool | None
+
+
+class DaysToForm(BaseModel):
+    days: int

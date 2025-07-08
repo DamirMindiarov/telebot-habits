@@ -10,3 +10,4 @@ class PasswordStates(StatesGroup):
 class HabitState(StatesGroup):
     for_add_habit = State()
     for_update_habit = State()
+    for_count_days = State()

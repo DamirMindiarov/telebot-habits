@@ -48,6 +48,7 @@ class HabitsDB(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
     count_done: Mapped[int]
+    days_to_form: Mapped[int] = mapped_column(default=21)
     user_id: Mapped[str] = mapped_column(ForeignKey("users.user_id"))
 
     user: Mapped["UsersDB"] = relationship("UsersDB", back_populates="habits")

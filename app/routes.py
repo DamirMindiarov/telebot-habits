@@ -6,6 +6,7 @@ from app.database import session_async, HabitsDB, HabitsTodayDB
 from app.functions import (
     del_habit,
     delete_old_habits_from_today_habits,
+    update_count_days_for_habits_by_user_id,
 )
 from app.pydentic_models import (
     Habit,
@@ -13,6 +14,7 @@ from app.pydentic_models import (
     HabitResponse,
     HabitUpdate,
     HabitToday,
+    DaysToForm,
 )
 from authorization.config import oauth2_scheme
 from authorization.functions import get_current_user, refresh_token
@@ -190,3 +192,21 @@ async def notifications(token: str = Depends(oauth2_scheme)) -> str:
         await session.commit()
 
     return result
+
+
+@router.put("/habit/count_days")
+async def update_count_days(days: DaysToForm,  token: str = Depends(oauth2_scheme)):
+    """Обновляет колонку days_to_form в таблице Habits"""
+    async with session_async() as session:
+        current_user = await get_current_user(token, session)
+
+        await update_count_days_for_habits_by_user_id(
+            user_id=current_user.user_id,
+            days=days.days,
+            session=session
+        )
+
+        await refresh_token(user_id=current_user.user_id, session=session)
+        await session.commit()
+
+    return
