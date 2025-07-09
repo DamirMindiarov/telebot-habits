@@ -25,13 +25,16 @@ async def show_habits(callback: CallbackQuery):
 
     habits = ast.literal_eval(response.text)
 
-    sample_habit = """{name}\nВыполнена: {count_done} из 21\nИзменить: /update{id_habit}\nУдалить: /delete{id_habit}"""
+    sample_habit = """{name}\nВыполнена: {count_done} из {days_to_form}\n{smiles}"""
+    sample_habit += """\nИзменить: /update{id_habit}\nУдалить: /delete{id_habit}"""
     list_habits = "Список привычек:\n"
 
     for habit in habits:
         list_habits += sample_habit.format(
             name=habit["name"],
             count_done=habit["count_done"],
+            days_to_form=habit["days_to_form"],
+            smiles="✅"*int(habit["count_done"])+"🌫"*(int(habit["days_to_form"])-int(habit["count_done"])),
             id_habit=habit["id"],
         )
         list_habits += "\n\n"

@@ -1,6 +1,7 @@
 import datetime
 
 from fastapi import Depends, APIRouter
+from sqlalchemy.exc import IntegrityError
 
 from app.database import session_async, HabitsDB, HabitsTodayDB
 from app.functions import (
@@ -40,12 +41,22 @@ async def add_habits(
     habit: Habit, token: str = Depends(oauth2_scheme)
 ) -> HabitResponse:
     """Добавляет привычку в БД"""
-    new_habit = HabitsDB(
-        name=habit.name, count_done=habit.count_done, user_id=habit.user_id
-    )
+
 
     async with session_async() as session:
         current_user = await get_current_user(token, session)
+
+        if len(current_user.habits):
+            days_to_form = int(current_user.habits[0].days_to_form)
+        else:
+            days_to_form = 21
+
+        new_habit = HabitsDB(
+            name=habit.name,
+            count_done=habit.count_done,
+            days_to_form=days_to_form,
+            user_id=habit.user_id,
+        )
         current_user.habits.append(new_habit)
         await session.flush()
 
@@ -112,22 +123,26 @@ async def get_habits_today(token=Depends(oauth2_scheme)) -> list:
     """Возвращает список привычек, которые нужно сегодня выполнить"""
     habits_today = []
     async with session_async() as session:
-        current_user = await get_current_user(token, session)
         await delete_old_habits_from_today_habits(session=session)
+        current_user = await get_current_user(token, session)
 
         if not current_user.today_habits:
             less_then_21 = [
                 habit for habit in current_user.habits if habit.count_done < 21
             ]
 
-            for habit in less_then_21:
-                habit_today = HabitsTodayDB(
-                    name=habit.name,
-                    date=datetime.datetime.now().date(),
-                    habit_id=habit.id,
-                    user_id=habit.user_id,
-                )
-                current_user.today_habits.append(habit_today)
+            try:
+                for habit in less_then_21:
+                    habit_today = HabitsTodayDB(
+                        name=habit.name,
+                        date=datetime.datetime.now().date(),
+                        habit_id=habit.id,
+                        user_id=habit.user_id,
+                    )
+                    current_user.today_habits.append(habit_today)
+            except IntegrityError:
+                pass
+
 
         habits_today = [
             HabitToday(
@@ -137,6 +152,7 @@ async def get_habits_today(token=Depends(oauth2_scheme)) -> list:
             )
             for habit in current_user.today_habits
         ]
+
 
         await refresh_token(user_id=current_user.user_id, session=session)
         await session.commit()

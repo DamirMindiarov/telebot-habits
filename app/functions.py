@@ -92,14 +92,15 @@ async def del_habit(habit_id: int, session: AsyncSession) -> CursorResult:
 #             continue
 
 
-async def delete_old_habits_from_today_habits(session: AsyncSession) -> bool:
+async def delete_old_habits_from_today_habits(session: AsyncSession):
     """Удаляет старые(чья дата меньше текущей) привычки из таблицы "На сегодня(HabitsTodayDB)" """
     date = datetime.datetime.now().date()
 
-    result = await session.execute(
+    await session.execute(
         delete(HabitsTodayDB).where(HabitsTodayDB.date < date)
     )
-    return True if result else False
+
+    return
 
 
 async def check_date_habits_today(session: AsyncSession) -> bool:

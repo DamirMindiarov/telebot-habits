@@ -16,8 +16,8 @@ scheduler = AsyncIOScheduler()
 async def get_users_id(session: AsyncSession):
     date = datetime.datetime.now().date()
 
-    # 1) в таблице HabitsDB есть хотя-бы одна привычка с count_done < 21
-    ui_not_count_done = await session.execute(select(HabitsDB.user_id).where(HabitsDB.count_done < 21))
+    # 1) в таблице HabitsDB есть хотя-бы одна привычка с count_done < days_to_form
+    ui_not_count_done = await session.execute(select(HabitsDB.user_id).where(HabitsDB.count_done < HabitsDB.days_to_form))
 
     # 1.1) если у пользователя в таблице HabitsTodayDB есть привычка с сегодняшней датой и с complete == None
     ui_not_complete = await session.execute(
@@ -63,7 +63,7 @@ async def myfunc(my_bot: AsyncTeleBot):
 async def main():
 
     # пользователь получает уведомление если
-    # 1) в таблице HabitsDB есть хотя-бы одна привычка с count_done < 21
+    # 1) в таблице HabitsDB есть хотя-бы одна привычка с count_done < days_to_form
     #  1.1) если у пользователя в таблице HabitsTodayDB есть привычка с сегодняшней датой и с complete == None
     #  или
     #  1.2) если у пользователя в таблице HabitsTodayDB отсутствует привычка с сегодняшней датой
