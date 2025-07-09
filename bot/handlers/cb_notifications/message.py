@@ -11,11 +11,13 @@ async def cb_notifications(message: Message):
     await bot.send_message(
         chat_id=message.from_user.id,
         text="Отключить/включить",
-        reply_markup=keyboard
+        reply_markup=keyboard,
     )
 
 
-@bot.callback_query_handler(func=lambda callback: callback.data == "cb_notifications")
+@bot.callback_query_handler(
+    func=lambda callback: callback.data == "cb_notifications"
+)
 async def cb_notifications_off(callback: CallbackQuery):
     token = await get_token_by_user_id(user_id=str(callback.from_user.id))
     headers = {"Authorization": f"Bearer {token}"}
@@ -25,7 +27,10 @@ async def cb_notifications_off(callback: CallbackQuery):
     )
 
     if response.status_code == 200:
-        await bot.send_message(chat_id=callback.from_user.id, text=response.text)
+        await bot.send_message(
+            chat_id=callback.from_user.id, text=response.text
+        )
     else:
-        await bot.send_message(chat_id=callback.from_user.id,
-                               text="Вы не авторизованы")
+        await bot.send_message(
+            chat_id=callback.from_user.id, text="Вы не авторизованы"
+        )

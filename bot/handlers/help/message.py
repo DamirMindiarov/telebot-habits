@@ -4,7 +4,7 @@ from loader import bot
 from bot.handlers.start.keyboard import main_keyboard
 
 
-@bot.message_handler(commands=['help'])
+@bot.message_handler(commands=["help"])
 async def command_help(message: Message):
     text = "🌻\n🔹Навигация происходит по клавиатуре⌨️"
 
@@ -16,6 +16,6 @@ async def command_help(message: Message):
     text += """\n🔹Чтобы отметить привычку как выполненную - в списке "На сегодня" нажмите "done"""
     text += """\n🔹Отключить уведомления - "Уведомления" -> "отключить"""
 
-
-    await bot.send_message(chat_id=message.from_user.id, text=text,
-                           reply_markup=main_keyboard)
+    await bot.send_message(
+        chat_id=message.from_user.id, text=text, reply_markup=main_keyboard
+    )

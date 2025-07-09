@@ -40,7 +40,7 @@ async def check_date_habits_today(session: AsyncSession) -> bool:
 
 
 async def check_completed_habits_today(
-        habit_id: int, session: AsyncSession
+    habit_id: int, session: AsyncSession
 ) -> bool:
     """Проверяет выполнена ли привычка в таблице HabitsTodayDB"""
     result = await session.execute(
@@ -52,8 +52,9 @@ async def check_completed_habits_today(
     return True if result else False
 
 
-async def update_count_days_for_habits_by_user_id(user_id: str, days: int,
-                                                  session: AsyncSession):
+async def update_count_days_for_habits_by_user_id(
+    user_id: str, days: int, session: AsyncSession
+):
     """Обновляет колонку days_to_form в таблице Habits"""
     await session.execute(
         update(HabitsDB)

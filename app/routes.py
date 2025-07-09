@@ -42,7 +42,6 @@ async def add_habits(
 ) -> HabitResponse:
     """Добавляет привычку в БД"""
 
-
     async with session_async() as session:
         current_user = await get_current_user(token, session)
 
@@ -143,7 +142,6 @@ async def get_habits_today(token=Depends(oauth2_scheme)) -> list:
             except IntegrityError:
                 pass
 
-
         habits_today = [
             HabitToday(
                 habit_id=habit.habit_id,
@@ -152,7 +150,6 @@ async def get_habits_today(token=Depends(oauth2_scheme)) -> list:
             )
             for habit in current_user.today_habits
         ]
-
 
         await refresh_token(user_id=current_user.user_id, session=session)
         await session.commit()
@@ -211,15 +208,15 @@ async def notifications(token: str = Depends(oauth2_scheme)) -> str:
 
 
 @router.put("/habit/count_days")
-async def update_count_days(days: DaysToForm,  token: str = Depends(oauth2_scheme)):
+async def update_count_days(
+    days: DaysToForm, token: str = Depends(oauth2_scheme)
+):
     """Обновляет колонку days_to_form в таблице Habits"""
     async with session_async() as session:
         current_user = await get_current_user(token, session)
 
         await update_count_days_for_habits_by_user_id(
-            user_id=current_user.user_id,
-            days=days.days,
-            session=session
+            user_id=current_user.user_id, days=days.days, session=session
         )
 
         await refresh_token(user_id=current_user.user_id, session=session)
