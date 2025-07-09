@@ -13,7 +13,8 @@ from bot.loader import bot
 scheduler = AsyncIOScheduler()
 
 
-async def get_users_id(session: AsyncSession):
+async def get_users_id(session: AsyncSession) -> list[str]:
+    """Возвращает список user_id кому нужно отправить уведомление"""
     date = datetime.datetime.now().date()
 
     # 1) в таблице HabitsDB есть хотя-бы одна привычка с count_done < days_to_form
@@ -34,6 +35,7 @@ async def get_users_id(session: AsyncSession):
         .where(HabitsTodayDB.date == None)
     )
 
+    # 2) если у пользователя включены уведомления
     ui_with_notifications_on = await session.execute(
         select(UsersDB.user_id)
         .where(UsersDB.notifications == "+")
@@ -51,6 +53,7 @@ async def get_users_id(session: AsyncSession):
 
 
 async def myfunc(my_bot: AsyncTeleBot):
+    """Отправляет сообщение пользователям"""
     async with session_async() as session:
         users_id = await get_users_id(session)
 
@@ -61,15 +64,18 @@ async def myfunc(my_bot: AsyncTeleBot):
             )
 
 async def main():
-
-    # пользователь получает уведомление если
-    # 1) в таблице HabitsDB есть хотя-бы одна привычка с count_done < days_to_form
-    #  1.1) если у пользователя в таблице HabitsTodayDB есть привычка с сегодняшней датой и с complete == None
-    #  или
-    #  1.2) если у пользователя в таблице HabitsTodayDB отсутствует привычка с сегодняшней датой
+    """
+    Ежедневно в 12 выполняет отправку уведомлений
+    Пользователь получает уведомление если
+    1) в таблице HabitsDB есть хотя-бы одна привычка с count_done < days_to_form
+     1.1) если у пользователя в таблице HabitsTodayDB есть привычка с сегодняшней датой и с complete == None
+          или
+     1.2) если у пользователя в таблице HabitsTodayDB отсутствует привычка с сегодняшней датой
+    2) если у пользователя включены уведомления
+    """
     scheduler.add_job(myfunc,
-                      'interval',
-                      minutes=5,
+                      'cron',
+                      hour=12,
                       id='my_job_id',
                       kwargs={'my_bot': bot}
                       )
