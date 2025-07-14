@@ -18,11 +18,6 @@ async def create_password(callback: CallbackQuery):
     )
 
     await bot.send_message(
-        chat_id=callback.from_user.id,
-        text=f"now_state {await bot.get_state(user_id=callback.from_user.id)}",
-    )
-
-    await bot.send_message(
         chat_id=callback.from_user.id, text=f"Придумайте пароль(4 символа)"
     )
 
