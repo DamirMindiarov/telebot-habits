@@ -36,6 +36,10 @@ services:
     networks:
       - nw
 
+  notifications:
+    build:
+      context: .
+    command: python notifications.py
 
 networks:
   nw:
