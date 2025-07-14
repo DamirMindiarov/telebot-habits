@@ -19,7 +19,7 @@ from pydentic_models import (
 )
 from authorization.config import oauth2_scheme
 from authorization.functions import get_current_user, refresh_token
-from functions import check_completed_habits_today
+from functions import check_completed_habits_today, form_habits_today
 
 router = APIRouter()
 
@@ -123,24 +123,10 @@ async def get_habits_today(token=Depends(oauth2_scheme)) -> list:
     habits_today = []
     async with session_async() as session:
         await delete_old_habits_from_today_habits(session=session)
+
         current_user = await get_current_user(token, session)
+        await form_habits_today(current_user)
 
-        if not current_user.today_habits:
-            less_then_21 = [
-                habit for habit in current_user.habits if habit.count_done < 21
-            ]
-
-            try:
-                for habit in less_then_21:
-                    habit_today = HabitsTodayDB(
-                        name=habit.name,
-                        date=datetime.datetime.now().date(),
-                        habit_id=habit.id,
-                        user_id=habit.user_id,
-                    )
-                    current_user.today_habits.append(habit_today)
-            except IntegrityError:
-                pass
 
         habits_today = [
             HabitToday(
@@ -150,6 +136,7 @@ async def get_habits_today(token=Depends(oauth2_scheme)) -> list:
             )
             for habit in current_user.today_habits
         ]
+
 
         await refresh_token(user_id=current_user.user_id, session=session)
         await session.commit()
