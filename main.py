@@ -1,4 +1,7 @@
 import asyncio
+
+from telebot.types import BotCommand
+
 import handlers
 from telebot import asyncio_filters
 
@@ -11,5 +14,6 @@ if __name__ == "__main__":
     from telebot.states.asyncio.middleware import StateMiddleware
 
     bot.setup_middleware(StateMiddleware(bot))
+    bot.set_my_commands([BotCommand('help', 'помощь')])
 
     asyncio.run(bot.polling())
