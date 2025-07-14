@@ -54,7 +54,6 @@ class HabitsDB(Base):
     user: Mapped["UsersDB"] = relationship("UsersDB", back_populates="habits")
 
 
-
 class HabitsTodayDB(Base):
     __tablename__ = "habits_today"
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -67,4 +66,3 @@ class HabitsTodayDB(Base):
     user: Mapped["UsersDB"] = relationship(
         "UsersDB", back_populates="today_habits"
     )
-

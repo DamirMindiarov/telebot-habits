@@ -13,8 +13,5 @@ async def get_token_by_user_id(user_id: str) -> str:
         return res
 
 
-
-
-
 async def if_not_auth(bot: AsyncTeleBot, user_chat_id: str | int):
     await bot.send_message(chat_id=user_chat_id, text="Вы не авторизованы")

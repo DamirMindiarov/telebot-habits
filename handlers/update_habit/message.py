@@ -26,8 +26,6 @@ async def update_habit(message: Message):
         data["habit_id"] = habit_id
     text = f"Введите новый текст для привычки с id {habit_id}"
 
-
-
     await bot.send_message(chat_id=message.from_user.id, text=text)
 
 
