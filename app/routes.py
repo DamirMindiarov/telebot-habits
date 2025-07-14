@@ -127,7 +127,6 @@ async def get_habits_today(token=Depends(oauth2_scheme)) -> list:
         current_user = await get_current_user(token, session)
         await form_habits_today(current_user)
 
-
         habits_today = [
             HabitToday(
                 habit_id=habit.habit_id,
@@ -136,7 +135,6 @@ async def get_habits_today(token=Depends(oauth2_scheme)) -> list:
             )
             for habit in current_user.today_habits
         ]
-
 
         await refresh_token(user_id=current_user.user_id, session=session)
         await session.commit()

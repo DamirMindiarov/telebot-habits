@@ -40,15 +40,11 @@ async def update_habit_1(message: Message):
     Отправляет запрос на обновление привычки, удаляет состояние.
     """
 
-
-
-
     async with bot.retrieve_data(
         message.from_user.id,
         message.chat.id,
     ) as data:
         habit_id = data.get("habit_id")
-
 
     token = await get_token_by_user_id(user_id=str(message.from_user.id))
     headers = {"Authorization": f"Bearer {token}"}

@@ -14,9 +14,7 @@ async def show_today_habits(callback: CallbackQuery):
     token = await get_token_by_user_id(user_id=str(callback.from_user.id))
     headers = {"Authorization": f"Bearer {token}"}
 
-    response = requests.get(
-        url="http://app:8000/habits/today", headers=headers
-    )
+    response = requests.get(url="http://app:8000/habits/today", headers=headers)
 
     if response.status_code == 401:
         await if_not_auth(bot=bot, user_chat_id=callback.from_user.id)

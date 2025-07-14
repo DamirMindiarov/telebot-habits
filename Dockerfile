@@ -10,10 +10,8 @@ COPY loader.py /new_telebot_habits/
 COPY main.py /new_telebot_habits/
 COPY notifications.py /new_telebot_habits/
 COPY states.py /new_telebot_habits/
-#COPY /bot/ /new_telebot_habits/bot
 
 COPY .gitignore /new_telebot_habits/
-COPY mytest.py /new_telebot_habits/
 COPY poetry.lock /new_telebot_habits/
 COPY pyproject.toml /new_telebot_habits/
 
@@ -26,5 +24,3 @@ WORKDIR /new_telebot_habits/
 RUN pip install "poetry==2.1.3"
 RUN poetry config virtualenvs.create false
 RUN poetry install
-
-#RUN pip install -r requirements.txt

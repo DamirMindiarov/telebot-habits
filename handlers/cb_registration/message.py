@@ -28,9 +28,7 @@ async def create_password_1(password: Message):
 
     if len(password.text) >= 4:
         data = {"username": password.from_user.id, "password": password.text}
-        response = requests.post(
-            "http://app:8000/registration", data=data
-        )
+        response = requests.post("http://app:8000/registration", data=data)
 
         if response.status_code != 201:
             await bot.send_message(
