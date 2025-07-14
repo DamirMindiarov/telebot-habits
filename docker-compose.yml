@@ -35,7 +35,6 @@ services:
     command: python main.py
     depends_on:
       app:
-        condition: service_healthy
         restart: true
     networks:
       - nw
@@ -46,7 +45,6 @@ services:
     command: python notifications.py
     depends_on:
       bot:
-        condition: service_healthy
         restart: true
 
 networks:
