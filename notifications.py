@@ -8,7 +8,7 @@ from telebot.async_telebot import AsyncTeleBot
 
 from app.authorization.database import HabitsDB, HabitsTodayDB, UsersDB
 from app.authorization.database import session_async
-from .loader import bot
+from loader import bot
 
 scheduler = AsyncIOScheduler()
 
