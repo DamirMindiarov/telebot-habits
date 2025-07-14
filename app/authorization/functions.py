@@ -7,13 +7,13 @@ from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.authorization.config import (
+from .config import (
     pwd_context,
     SECRET_KEY,
     ALGORITHM,
     TOKEN_EXPIRE_MINUTES,
 )
-from app.database import session_async, UsersDB
+from .database import session_async, UsersDB
 
 
 def verify_password(password: str, hashed_password: str) -> bool:

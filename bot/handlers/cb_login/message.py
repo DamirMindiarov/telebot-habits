@@ -3,7 +3,7 @@ from telebot.types import CallbackQuery, Message
 
 from loader import bot
 from states import PasswordStates
-from bot.handlers.cb_login.keyboard import (
+from handlers.cb_login.keyboard import (
     keyboard_forgot_pass,
     keyboard_show_habits,
 )

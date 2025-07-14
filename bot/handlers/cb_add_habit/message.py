@@ -3,9 +3,9 @@ import json
 import requests
 from telebot.types import CallbackQuery, Message
 
-from bot.functions import get_token_by_user_id, if_not_auth
-from bot.handlers.cb_show_habits.keyboard import keyboard
-from bot.states import HabitState
+from functions import get_token_by_user_id, if_not_auth
+from handlers.cb_show_habits.keyboard import keyboard
+from states import HabitState
 from loader import bot
 
 

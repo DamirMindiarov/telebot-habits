@@ -3,9 +3,9 @@ from contextlib import asynccontextmanager
 import uvicorn
 from fastapi import FastAPI
 
-from app.authorization.routes import router as auth_router
-from app.database import create_db
-from app.routes import router as test_router
+from authorization.routes import router as auth_router
+from authorization.database import create_db
+from routes import router as test_router
 
 
 @asynccontextmanager

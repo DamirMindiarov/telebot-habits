@@ -8,7 +8,8 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-db_url_async = "postgresql+asyncpg://admin:admin@localhost:5432/habits"
+# db_url_async = "postgresql+asyncpg://admin:admin@localhost:5432/habits"
+db_url_async = "postgresql+asyncpg://admin:admin@database:5432/habits"
 
 engine_async = create_async_engine(url=db_url_async, echo=False)
 

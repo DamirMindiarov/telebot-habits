@@ -1,7 +1,7 @@
 import requests
 from telebot.types import Message
 
-from bot.functions import get_token_by_user_id, if_not_auth
+from functions import get_token_by_user_id, if_not_auth
 from loader import bot
 
 

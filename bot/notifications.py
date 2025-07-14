@@ -6,9 +6,9 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from telebot.async_telebot import AsyncTeleBot
 
-from app.database import HabitsDB, HabitsTodayDB, UsersDB
-from app.database import session_async
-from bot.loader import bot
+from authorization.database import HabitsDB, HabitsTodayDB, UsersDB
+from authorization.database import session_async
+from .loader import bot
 
 scheduler = AsyncIOScheduler()
 

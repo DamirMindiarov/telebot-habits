@@ -3,7 +3,7 @@ import requests
 from loader import bot
 from telebot.types import CallbackQuery, Message
 from states import PasswordStates
-from bot.handlers.cb_registration.keyboard import keyboard
+from .keyboard import keyboard
 
 
 @bot.message_handler(func=lambda callback: callback.text == "🎓Регистрация")

@@ -1,7 +1,7 @@
 from telebot.types import Message
 import requests
 
-from bot.functions import get_token_by_user_id
+from functions import get_token_by_user_id
 from loader import bot
 from states import HabitState
 

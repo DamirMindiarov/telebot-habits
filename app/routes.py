@@ -3,13 +3,13 @@ import datetime
 from fastapi import Depends, APIRouter
 from sqlalchemy.exc import IntegrityError
 
-from app.database import session_async, HabitsDB, HabitsTodayDB
-from app.functions import (
+from authorization.database import session_async, HabitsDB, HabitsTodayDB
+from functions import (
     del_habit,
     delete_old_habits_from_today_habits,
     update_count_days_for_habits_by_user_id,
 )
-from app.pydentic_models import (
+from pydentic_models import (
     Habit,
     HabitId,
     HabitResponse,

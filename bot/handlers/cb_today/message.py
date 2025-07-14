@@ -1,13 +1,10 @@
 import ast
-import datetime
 
 import requests
-from sqlalchemy import select, delete
 from telebot.types import CallbackQuery
 
-from bot.functions import get_token_by_user_id, if_not_auth
+from functions import get_token_by_user_id, if_not_auth
 from loader import bot
-from app.database import session_async, HabitsTodayDB, HabitsDB
 
 
 @bot.message_handler(func=lambda callback: callback.text == "✔️На сегодня")

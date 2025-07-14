@@ -3,7 +3,7 @@ import datetime
 from sqlalchemy import select, delete, CursorResult, update
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from database import HabitsDB, HabitsTodayDB
+from authorization.database import HabitsDB, HabitsTodayDB
 
 
 async def del_habit(habit_id: int, session: AsyncSession) -> CursorResult:

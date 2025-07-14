@@ -1,8 +1,8 @@
 import requests
 from telebot.types import Message, CallbackQuery
 
-from bot.handlers.cb_notifications.keyboard import keyboard
-from bot.functions import get_token_by_user_id
+from handlers.cb_notifications.keyboard import keyboard
+from functions import get_token_by_user_id
 from loader import bot
 
 

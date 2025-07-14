@@ -1,13 +1,16 @@
 from fastapi import Depends, HTTPException, status, APIRouter
 from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy import select
 
-from app.authorization.config import pwd_context
-from app.authorization.functions import (
+from .pydentic_models import UserId
+
+from .config import pwd_context
+from .functions import (
     authenticate_user,
     refresh_token,
     add_user,
 )
-from database import session_async, UsersDB
+from authorization.database import session_async, UsersDB
 
 router = APIRouter()
 
@@ -41,3 +44,16 @@ async def registration_user(
         form_data.username, pwd_context.hash(form_data.password)
     )
     return user
+
+
+@router.get("/user/token")
+async def get_user_token(user_id: UserId):
+    """"""
+
+    async with session_async() as session:
+        token = await session.execute(
+            select(UsersDB.token).where(UsersDB.user_id == user_id.user_id)
+        )
+        token = token.scalar()
+
+    return token
