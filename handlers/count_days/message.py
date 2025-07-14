@@ -8,7 +8,7 @@ from states import HabitState
 
 @bot.message_handler(commands=["count_days"])
 async def count_days_func(message: Message):
-    """"""
+    """Отправляет сообщение с просьбой выбрать кол-во дней и переключает состояние"""
     text = """Для формирования устойчивой привычки в среднем требуется около 66 дней, хотя этот период может варьироваться от 18 до 254 дней в зависимости от сложности действия и индивидуальных особенностей человека. Популярное утверждение о 21 дне не подтверждается научными данными, хотя некоторые исследования показывают, что первые признаки формирования привычки могут появиться через 59-66 дней."""
     text += "\nВыберите кол-во дней от 18 до 254:"
     await bot.send_message(chat_id=message.from_user.id, text=text)
@@ -19,7 +19,7 @@ async def count_days_func(message: Message):
 
 @bot.message_handler(state=HabitState.for_count_days)
 async def get_count_days(message: Message):
-    """"""
+    """Получает от пользователя число и отправляет запрос на изменение этого числа в БД"""
     if not message.text.isdigit() or not 18 <= int(message.text) <= 254:
         await bot.send_message(
             chat_id=message.from_user.id,

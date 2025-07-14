@@ -25,7 +25,6 @@ async def add_habit(callback: CallbackQuery):
 @bot.message_handler(state=HabitState.for_add_habit)
 async def add_habit_1(message: Message):
     """Добавляет привычку если пользователь авторизован, удаляет состояние"""
-    # запрос на добавление привычки
     token = await get_token_by_user_id(user_id=str(message.from_user.id))
 
     habit = {"name": message.text, "user_id": str(message.from_user.id)}

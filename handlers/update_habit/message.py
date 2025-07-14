@@ -12,9 +12,7 @@ async def update_habit(message: Message):
     устанавливает состояние для обновления привычки,
     сохраняет id привычки и токен
     """
-    # user_active_token = await check_auth(user_id=message.from_user.id)
-    #
-    # if user_active_token:
+
     habit_id = message.text.replace("/update", "")
     await bot.set_state(
         user_id=message.from_user.id,
@@ -28,8 +26,7 @@ async def update_habit(message: Message):
         data["habit_id"] = habit_id
     text = f"Введите новый текст для привычки с id {habit_id}"
 
-    # else:
-    #     text = "Нужно авторизоваться"
+
 
     await bot.send_message(chat_id=message.from_user.id, text=text)
 

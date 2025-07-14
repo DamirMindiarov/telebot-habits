@@ -1,7 +1,7 @@
 import ast
 
 import requests
-from telebot.types import CallbackQuery, Message
+from telebot.types import CallbackQuery
 
 from functions import get_token_by_user_id, if_not_auth
 from handlers.cb_show_habits.keyboard import keyboard
