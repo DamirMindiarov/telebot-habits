@@ -48,7 +48,7 @@ async def registration_user(
 
 @router.get("/user/token")
 async def get_user_token(user_id: UserId):
-    """"""
+    """Получить текущий токен пользователя"""
 
     async with session_async() as session:
         token = await session.execute(
