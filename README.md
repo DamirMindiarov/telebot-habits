@@ -1,5 +1,14 @@
 <h1 align="center">Телеграм бот. Трекер привычек.</h1>
 
+## Содержание
+- [Описание](#описание-проекта) 
+- [Как использовать](#как-использовать)
+- [Функциональность](#функциональность)
+- [О проекте](#о-проекте)
+- [Технологии](#технологии)
+- [Запуск](#запуск)
+
+
 # Описание проекта
 Пользователь может зарегистрироваться и создать свой список привычек, отмечать выполненные, 
 отслеживать прогресс, получать напоминания о необходимости выполнить их.
@@ -23,6 +32,24 @@
 - backend python + Fastapi
 - frontend AsyncTeleBot
 - notifications AsyncTeleBot
+
+
+## Технологии
+- python
+- fastapi
+- uvicorn
+- pytelegrambotapi
+- pydantic-settings
+- asyncio
+- aiohttp
+- python-dotenv
+- sqlalchemy
+- passlib
+- pyjwt
+- asyncpg
+- python-multipart
+- bcrypt
+- apscheduler
 
 ## Запуск
 - Для файла app/authorization/config.py<br>
